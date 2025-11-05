@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mates Cortos - Aprende Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav>
+        <ul></ul>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Mates Cortos</h1>
+            <p>Estudia el Mate del Pastor y el Mate del Loco.</p>
+        </header>
+
+        <div class="content-card">
+            <h2>Mate del Pastor</h2>
+            <p>El <strong>Mate del Pastor</strong> es uno de los mates más rápidos posibles. Ocurre cuando las blancas desarrollan agresivamente la dama y el alfil para dar jaque mate en solo 4 movimientos.</p>
+            <p><strong>Secuencia del Mate del Pastor:</strong></p>
+            <ol style="padding-left: 2rem; line-height: 2;">
+                <li>e4 e5</li>
+                <li>Ac4 Cc6</li>
+                <li>Df3 Cf6??</li>
+                <li>Df7#</li>
+            </ol>
+            <p><strong>Lección:</strong> No desarrolles el caballo a f6 sin proteger la casilla f7, especialmente contra un ataque de dama y alfil.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-scholar"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-primary" onclick="playScholarMate()">Reproducir Secuencia</button>
+                <button class="btn btn-secondary" onclick="boardScholar.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Mate del Loco</h2>
+            <p>El <strong>Mate del Loco</strong> es el mate más rápido posible en ajedrez, ocurriendo en solo 2 movimientos.</p>
+            <p><strong>Secuencia del Mate del Loco:</strong></p>
+            <ol style="padding-left: 2rem; line-height: 2;">
+                <li>f3 e5</li>
+                <li>g4 Dh4#</li>
+            </ol>
+            <p><strong>Lección:</strong> No debilites las casillas alrededor de tu rey moviendo los peones de f y g sin necesidad.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-fool"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-primary" onclick="playFoolMate()">Reproducir Secuencia</button>
+                <button class="btn btn-secondary" onclick="boardFool.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="exercise-panel">
+            <h3>Ejercicio: Reproducir el Mate del Pastor</h3>
+            <div class="exercise-objective">
+                <strong>Objetivo:</strong> Reproduce el Mate del Pastor moviendo las piezas blancas según la secuencia correcta.
+            </div>
+            <div class="chessboard-container">
+                <div id="chessboard-exercise"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardExercise.reset()">Reiniciar Ejercicio</button>
+            </div>
+            <div id="exercise-feedback" class="exercise-feedback"></div>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/chess-engine.js"></script>
+    <script src="js/chessboard.js"></script>
+    <script>
+        const engineScholar = new ChessEngine();
+        const boardScholar = new ChessBoard('chessboard-scholar', engineScholar);
+        boardScholar.render();
+
+        const engineFool = new ChessEngine();
+        const boardFool = new ChessBoard('chessboard-fool', engineFool);
+        boardFool.render();
+
+        function playScholarMate() {
+            boardScholar.reset();
+            setTimeout(() => {
+                engineScholar.makeMove(6, 4, 4, 4); // e4
+                engineScholar.makeMove(1, 4, 3, 4); // e5
+                boardScholar.render();
+                setTimeout(() => {
+                    engineScholar.makeMove(7, 5, 4, 2); // Ac4
+                    engineScholar.makeMove(0, 1, 2, 2); // Cc6
+                    boardScholar.render();
+                    setTimeout(() => {
+                        engineScholar.makeMove(7, 3, 5, 5); // Df3
+                        engineScholar.makeMove(0, 6, 2, 5); // Cf6
+                        boardScholar.render();
+                        setTimeout(() => {
+                            engineScholar.makeMove(5, 5, 1, 5); // Df7#
+                            boardScholar.render();
+                            engineScholar.updateCheckStatus();
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+            }, 500);
+        }
+
+        function playFoolMate() {
+            boardFool.reset();
+            setTimeout(() => {
+                engineFool.makeMove(6, 5, 4, 5); // f3
+                engineFool.makeMove(1, 4, 3, 4); // e5
+                boardFool.render();
+                setTimeout(() => {
+                    engineFool.makeMove(6, 6, 4, 6); // g4
+                    engineFool.makeMove(0, 3, 4, 7); // Dh4#
+                    boardFool.render();
+                    engineFool.updateCheckStatus();
+                }, 1000);
+            }, 500);
+        }
+
+        const engineExercise = new ChessEngine();
+        const boardExercise = new ChessBoard('chessboard-exercise', engineExercise);
+        boardExercise.render();
+        
+        let expectedMoves = ['e2e4', 'f1c4', 'd1f3'];
+        let moveIndex = 0;
+        
+        boardExercise.onMoveCallback = () => {
+            const lastMove = engineExercise.moveHistory[engineExercise.moveHistory.length - 1];
+            if (!lastMove) return;
+            
+            const feedback = document.getElementById('exercise-feedback');
+            const move = lastMove.notation.substring(0, 4);
+            
+            if (feedback) {
+                feedback.classList.add('show');
+                
+                if (moveIndex < expectedMoves.length && move === expectedMoves[moveIndex]) {
+                    moveIndex++;
+                    if (moveIndex < expectedMoves.length) {
+                        feedback.classList.add('info');
+                        feedback.classList.remove('error', 'success');
+                        feedback.textContent = `¡Correcto! Ahora ejecuta: ${expectedMoves[moveIndex]}`;
+                    } else {
+                        feedback.classList.add('success');
+                        feedback.classList.remove('error', 'info');
+                        feedback.textContent = '¡Excelente! Has completado el Mate del Pastor.';
+                    }
+                } else {
+                    feedback.classList.add('error');
+                    feedback.classList.remove('success', 'info');
+                    feedback.textContent = 'Movimiento incorrecto. Intenta seguir la secuencia del Mate del Pastor.';
+                }
+            }
+        };
+    </script>
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="oMWT4vhEPAcD7wO6AZRBe";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>
+

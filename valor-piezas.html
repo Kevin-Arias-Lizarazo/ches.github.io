@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valor Relativo de las Piezas - Aprende Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav>
+        <ul></ul>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Valor Relativo de las Piezas</h1>
+            <p>Conoce la valoración de cada pieza para tomar mejores decisiones.</p>
+        </header>
+
+        <div class="content-card">
+            <h2>Sistema de Valoración</h2>
+            <p>Para tomar decisiones sobre intercambios, es útil conocer el valor relativo de las piezas. La siguiente tabla muestra valores aproximados:</p>
+            
+            <table class="value-table">
+                <thead>
+                    <tr>
+                        <th>Pieza</th>
+                        <th>Símbolo</th>
+                        <th>Valor</th>
+                        <th>Notas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Peón</td>
+                        <td>♙</td>
+                        <td>1 punto</td>
+                        <td>Unidad base de valor</td>
+                    </tr>
+                    <tr>
+                        <td>Caballo</td>
+                        <td>♘</td>
+                        <td>3 puntos</td>
+                        <td>Valor similar al alfil</td>
+                    </tr>
+                    <tr>
+                        <td>Alfil</td>
+                        <td>♗</td>
+                        <td>3 puntos</td>
+                        <td>Valor similar al caballo</td>
+                    </tr>
+                    <tr>
+                        <td>Torre</td>
+                        <td>♖</td>
+                        <td>5 puntos</td>
+                        <td>Vale aproximadamente 2 alfiles</td>
+                    </tr>
+                    <tr>
+                        <td>Dama</td>
+                        <td>♕</td>
+                        <td>9 puntos</td>
+                        <td>La pieza más valiosa</td>
+                    </tr>
+                    <tr>
+                        <td>Rey</td>
+                        <td>♔</td>
+                        <td>Infinito</td>
+                        <td>No tiene valor material, perderlo significa perder</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="content-card">
+            <h2>Consideraciones Importantes</h2>
+            <p><strong>Estos valores son aproximados:</strong> El valor real de una pieza puede variar según la posición.</p>
+            
+            <h3>Caballo vs Alfil</h3>
+            <p>Aunque ambos valen 3 puntos, sus características son diferentes:</p>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li><strong>Caballo:</strong> Mejor en posiciones cerradas, puede saltar sobre piezas</li>
+                <li><strong>Alfil:</strong> Mejor en posiciones abiertas, necesita diagonales libres</li>
+            </ul>
+
+            <h3>Par de Alfiles</h3>
+            <p>Tener el par de alfiles suele ser una ventaja, especialmente en posiciones abiertas.</p>
+
+            <h3>Peones Pasados</h3>
+            <p>Un peón pasado (sin peones enemigos que lo bloqueen) puede valer más que un peón normal, especialmente en finales.</p>
+        </div>
+
+        <div class="content-card">
+            <h2>Ejemplos de Intercambios</h2>
+            <p><strong>Intercambio justo:</strong> Torre (5) por Alfil (3) + Caballo (3) = 6 puntos totales</p>
+            <p><strong>Ventajoso:</strong> Dama (9) por Torre (5) + Alfil (3) = 8 puntos totales</p>
+            <p><strong>Desventajoso:</strong> Dama (9) por Torre (5) + Peón (1) = 6 puntos totales</p>
+        </div>
+
+        <div class="exercise-panel">
+            <h3>Ejercicio: Evaluar Intercambio</h3>
+            <div class="exercise-objective">
+                <strong>Objetivo:</strong> Evalúa si el siguiente intercambio es ventajoso: ¿Intercambiarías una Torre por un Alfil y un Caballo?
+            </div>
+            <div id="exercise-feedback" class="exercise-feedback" style="margin-top: 1rem;">
+                <p><strong>Respuesta:</strong> Sí, sería ventajoso. Torre (5 puntos) por Alfil (3) + Caballo (3) = 6 puntos, ganando 1 punto de material.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="oMWT4vhEPAcD7wO6AZRBe";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>
+

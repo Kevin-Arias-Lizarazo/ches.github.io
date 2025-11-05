@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objetivo del Juego - Aprende Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav>
+        <ul></ul>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Objetivo del Juego</h1>
+            <p>Entiende Jaque, Jaque Mate y Ahogado (Tablas).</p>
+        </header>
+
+        <div class="content-card">
+            <h2>Jaque</h2>
+            <p>Se dice que el rey está en <strong>jaque</strong> cuando está siendo atacado por una pieza enemiga.</p>
+            <p>Cuando tu rey está en jaque, <strong>debes</strong> hacer algo para salir del jaque:</p>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li>Mover el rey a una casilla segura</li>
+                <li>Capturar la pieza que está dando jaque</li>
+                <li>Interponer una pieza entre el rey y la pieza que está dando jaque</li>
+            </ul>
+            <div class="chessboard-container">
+                <div id="chessboard-check"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardCheck.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Jaque Mate</h2>
+            <p>Se dice que el rey está en <strong>jaque mate</strong> cuando:</p>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li>Está en jaque</li>
+                <li>No puede salir del jaque con ningún movimiento legal</li>
+            </ul>
+            <p>Cuando un jugador está en jaque mate, <strong>ha perdido la partida</strong>.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-checkmate"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardCheckmate.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Ahogado (Tablas)</h2>
+            <p>Se produce un <strong>ahogado</strong> (tablas) cuando:</p>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li>Es el turno de un jugador</li>
+                <li>Su rey NO está en jaque</li>
+                <li>No tiene ningún movimiento legal disponible</li>
+            </ul>
+            <p>En caso de ahogado, la partida termina en <strong>empate</strong>.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-stalemate"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardStalemate.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="exercise-panel">
+            <h3>Ejercicio: Identificar Jaque</h3>
+            <div class="exercise-objective">
+                <strong>Objetivo:</strong> Identifica si el rey negro está en jaque en la posición del tablero.
+            </div>
+            <div class="chessboard-container">
+                <div id="chessboard-exercise"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardExercise.reset()">Reiniciar Ejercicio</button>
+            </div>
+            <div id="exercise-feedback" class="exercise-feedback"></div>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/chess-engine.js"></script>
+    <script src="js/chessboard.js"></script>
+    <script>
+        // Posición con jaque
+        const engineCheck = new ChessEngine();
+        engineCheck.loadFEN('rnbqkbnr/pppp1ppp/8/4p3/6P1/5P2/PPPPP2P/RNBQKBNR b KQkq - 0 1');
+        const boardCheck = new ChessBoard('chessboard-check', engineCheck);
+        boardCheck.render();
+
+        // Posición con jaque mate
+        const engineCheckmate = new ChessEngine();
+        engineCheckmate.loadFEN('rnb1kbnr/pppp1ppp/8/4p2q/6P1/5P2/PPPPP2P/RNBQKBNR w KQkq - 0 1');
+        const boardCheckmate = new ChessBoard('chessboard-checkmate', engineCheckmate);
+        boardCheckmate.render();
+
+        // Posición con ahogado
+        const engineStalemate = new ChessEngine();
+        engineStalemate.loadFEN('8/8/8/8/8/1k6/1p6/1K6 w - - 0 1');
+        const boardStalemate = new ChessBoard('chessboard-stalemate', engineStalemate);
+        boardStalemate.render();
+
+        // Ejercicio
+        const engineExercise = new ChessEngine();
+        engineExercise.loadFEN('rnbqkb1r/pppp1ppp/5n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 1');
+        const boardExercise = new ChessBoard('chessboard-exercise', engineExercise);
+        boardExercise.render();
+        
+        // Verificar si el rey está en jaque
+        setTimeout(() => {
+            engineExercise.updateCheckStatus();
+            const feedback = document.getElementById('exercise-feedback');
+            if (feedback && engineExercise.inCheck.black) {
+                feedback.classList.add('show', 'success');
+                feedback.textContent = '¡Correcto! El rey negro está en jaque por la dama blanca.';
+            }
+        }, 500);
+    </script>
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="oMWT4vhEPAcD7wO6AZRBe";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>
+

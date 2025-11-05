@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrategia de Juego Medio - Aprende Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav>
+        <ul></ul>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Estrategia de Juego Medio</h1>
+            <p>Aprende a crear planes y evaluar estructuras de peones.</p>
+        </header>
+
+        <div class="content-card">
+            <h2>Creación de Planes</h2>
+            <p>En el juego medio, es fundamental tener un <strong>plan</strong>. Un plan es una estrategia general para mejorar tu posición o atacar al enemigo.</p>
+            <p><strong>Elementos de un buen plan:</strong></p>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li><strong>Evaluar la posición:</strong> Identifica las fortalezas y debilidades de ambas posiciones</li>
+                <li><strong>Identificar objetivos:</strong> ¿Qué quieres lograr? (atacar al rey, ganar material, mejorar piezas)</li>
+                <li><strong>Secuencia lógica:</strong> Ordena tus movimientos para lograr tu objetivo</li>
+                <li><strong>Flexibilidad:</strong> Sé capaz de adaptar tu plan si la situación cambia</li>
+            </ul>
+        </div>
+
+        <div class="content-card">
+            <h2>Tipos de Planes Comunes</h2>
+            
+            <h3>1. Ataque al Rey</h3>
+            <p>Cuando el rey enemigo está expuesto o débil, concentra tus piezas para atacarlo.</p>
+            
+            <h3>2. Dominio del Centro</h3>
+            <p>Controlar el centro te da más espacio y mejores opciones de movimiento.</p>
+            
+            <h3>3. Ataque de Peones</h3>
+            <p>Usa tus peones para crear debilidades en la posición enemiga.</p>
+            
+            <h3>4. Mejora de Piezas</h3>
+            <p>Coloca tus piezas en casillas activas desde donde puedan ejercer presión.</p>
+            
+            <h3>5. Intercambio Ventajoso</h3>
+            <p>Intercambia piezas cuando te beneficie, especialmente piezas pasivas por activas.</p>
+        </div>
+
+        <div class="content-card">
+            <h2>Estructuras de Peones</h2>
+            <p>La <strong>estructura de peones</strong> es la disposición de los peones en el tablero. Determina en gran medida la estrategia de la partida.</p>
+            
+            <h3>Tipos de Estructuras Importantes:</h3>
+            
+            <h4>Peones Pasados</h4>
+            <p>Un peón pasado es uno que no tiene peones enemigos que lo bloqueen en su camino hacia la promoción.</p>
+            
+            <h4>Peones Dobles</h4>
+            <p>Dos peones del mismo color en la misma columna. Generalmente son una debilidad.</p>
+            
+            <h4>Peones Aislados</h4>
+            <p>Un peón que no tiene peones aliados en columnas adyacentes. Puede ser una debilidad pero también da casillas de apoyo.</p>
+            
+            <h4>Peones Retrasados</h4>
+            <p>Un peón que está detrás de los demás peones de su color. Puede ser difícil de defender.</p>
+        </div>
+
+        <div class="content-card">
+            <h2>Evaluación de Posiciones</h2>
+            <p>Para crear un buen plan, debes evaluar:</p>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li><strong>Material:</strong> ¿Quién tiene más piezas?</li>
+                <li><strong>Desarrollo:</strong> ¿Están todas las piezas desarrolladas?</li>
+                <li><strong>Rey:</strong> ¿Está seguro el rey?</li>
+                <li><strong>Centro:</strong> ¿Quién controla el centro?</li>
+                <li><strong>Piezas:</strong> ¿Están activas o pasivas?</li>
+                <li><strong>Peones:</strong> ¿Hay debilidades en la estructura de peones?</li>
+            </ul>
+        </div>
+
+        <div class="exercise-panel">
+            <h3>Ejercicio: Analizar Posición</h3>
+            <div class="exercise-objective">
+                <strong>Objetivo:</strong> Observa la posición del tablero e identifica un plan posible para las blancas.
+            </div>
+            <div class="chessboard-container">
+                <div id="chessboard-exercise"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardExercise.reset()">Reiniciar Ejercicio</button>
+            </div>
+            <div id="exercise-feedback" class="exercise-feedback">
+                <p><strong>Ejemplo de análisis:</strong> Observa el centro del tablero, la seguridad de los reyes, y las piezas activas. ¿Qué plan crearías?</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/chess-engine.js"></script>
+    <script src="js/chessboard.js"></script>
+    <script>
+        const engineExercise = new ChessEngine();
+        // Posición de ejemplo para análisis
+        engineExercise.loadFEN('r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1');
+        const boardExercise = new ChessBoard('chessboard-exercise', engineExercise);
+        boardExercise.render();
+    </script>
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="oMWT4vhEPAcD7wO6AZRBe";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>
+

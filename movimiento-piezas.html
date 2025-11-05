@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movimiento de Piezas - Aprende Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    <nav role="navigation" aria-label="Navegación principal">
+        <ul></ul>
+    </nav>
+
+    <main id="main-content" class="container" role="main">
+        <header class="page-header">
+            <h1>Movimiento de Piezas</h1>
+            <p>Aprende cómo se mueven cada una de las piezas del ajedrez.</p>
+        </header>
+
+        <div class="content-card">
+            <h2>El Peón</h2>
+            <p>Los peones se mueven <strong>hacia adelante</strong> una casilla a la vez. En su primer movimiento, pueden avanzar <strong>dos casillas</strong>.</p>
+            <p>Los peones <strong>capturan</strong> en diagonal, una casilla hacia adelante.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-pawn"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="window.boards.pawn?.loadFEN('8/8/8/8/8/4P3/8/8 w - - 0 1')">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>La Torre</h2>
+            <p>La torre se mueve en <strong>líneas rectas</strong> (horizontal o vertical) cualquier número de casillas.</p>
+            <p>No puede saltar sobre otras piezas.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-rook"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="window.boards.rook?.loadFEN('8/8/8/8/8/4R3/8/8 w - - 0 1')">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>El Caballo</h2>
+            <p>El caballo se mueve en forma de <strong>"L"</strong>: dos casillas en una dirección y una casilla perpendicular.</p>
+            <p>Es la única pieza que puede <strong>saltar sobre otras piezas</strong>.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-knight"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="window.boards.knight?.loadFEN('8/8/8/8/8/4N3/8/8 w - - 0 1')">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>El Alfil</h2>
+            <p>El alfil se mueve en <strong>diagonal</strong> cualquier número de casillas.</p>
+            <p>Cada jugador tiene dos alfiles: uno en casillas claras y otro en casillas oscuras.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-bishop"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="window.boards.bishop?.loadFEN('8/8/8/8/8/4B3/8/8 w - - 0 1')">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>La Dama</h2>
+            <p>La dama combina los movimientos de la <strong>torre y el alfil</strong>.</p>
+            <p>Puede moverse en línea recta (horizontal, vertical o diagonal) cualquier número de casillas.</p>
+            <p>Es la pieza más poderosa del tablero.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-queen"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="window.boards.queen?.loadFEN('8/8/8/8/8/4Q3/8/8 w - - 0 1')">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>El Rey</h2>
+            <p>El rey se mueve <strong>una casilla</strong> en cualquier dirección (horizontal, vertical o diagonal).</p>
+            <p>No puede moverse a una casilla que esté siendo atacada por una pieza enemiga.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-king"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="window.boards.king?.loadFEN('8/8/8/8/8/4K3/8/8 w - - 0 1')">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <div class="exercise-panel">
+                <h3>Ejercicio: Mover el Peón</h3>
+                <div class="exercise-objective">
+                    <strong>Objetivo:</strong> Mueve el peón blanco de e2 a e4 en el tablero principal.
+                </div>
+                <div class="chessboard-container">
+                    <div id="chessboard-exercise"></div>
+                </div>
+                <div class="board-controls">
+                    <button class="btn btn-secondary" onclick="resetExercise()">Reiniciar Ejercicio</button>
+                    <button id="show-suggestion-btn" class="btn show-suggestion-btn" onclick="toggleSuggestion()" style="display: none;">Mostrar Sugerencia</button>
+                </div>
+                <div id="exercise-feedback" class="exercise-feedback"></div>
+                <div id="exercise-explanation" style="display: none; margin-top: 1rem; padding: 1rem; background: #e7f3ff; border-radius: 4px;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cargar sistema de ajedrez completo -->
+    <script src="js/chess-loader.js"></script>
+    <script src="js/navigation.js"></script>
+    
+    <script>
+        // Esperar a que el sistema de ajedrez esté cargado
+        window.addEventListener('chessSystemLoaded', function() {
+            // Almacenar referencias a los tableros
+            window.boards = {};
+
+            // Tableros para demostración de cada pieza
+            window.boards.pawn = new ChessBoard('chessboard-pawn', {
+                initialPosition: '8/8/8/8/8/4P3/8/8 w - - 0 1',
+                allowMoves: true,
+                highlightValidMoves: true
+            });
+
+            window.boards.rook = new ChessBoard('chessboard-rook', {
+                initialPosition: '8/8/8/8/8/4R3/8/8 w - - 0 1',
+                allowMoves: true,
+                highlightValidMoves: true
+            });
+
+            window.boards.knight = new ChessBoard('chessboard-knight', {
+                initialPosition: '8/8/8/8/8/4N3/8/8 w - - 0 1',
+                allowMoves: true,
+                highlightValidMoves: true
+            });
+
+            window.boards.bishop = new ChessBoard('chessboard-bishop', {
+                initialPosition: '8/8/8/8/8/4B3/8/8 w - - 0 1',
+                allowMoves: true,
+                highlightValidMoves: true
+            });
+
+            window.boards.queen = new ChessBoard('chessboard-queen', {
+                initialPosition: '8/8/8/8/8/4Q3/8/8 w - - 0 1',
+                allowMoves: true,
+                highlightValidMoves: true
+            });
+
+            window.boards.king = new ChessBoard('chessboard-king', {
+                initialPosition: '8/8/8/8/8/4K3/8/8 w - - 0 1',
+                allowMoves: true,
+                highlightValidMoves: true
+            });
+
+            // Tablero para ejercicio
+            const exercises = {
+                movimientoPiezas: [
+                    {
+                        id: 'peon-1',
+                        objective: 'Mueve el peón blanco de e2 a e4',
+                        fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                        solution: 'e2e4',
+                        hints: ['El peón puede avanzar dos casillas en su primer movimiento', 'Mueve de e2 a e4'],
+                        explanation: '¡Correcto! Los peones pueden avanzar dos casillas en su primer movimiento.'
+                    }
+                ]
+            };
+
+            window.boards.exercise = new ChessBoard('chessboard-exercise', {
+                initialPosition: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                allowMoves: true,
+                highlightValidMoves: true
+            });
+
+            const exerciseManager = new ExerciseManager();
+            exerciseManager.registerExercises(exercises);
+            exerciseManager.registerBoard('chessboard-exercise', window.boards.exercise);
+            exerciseManager.setExerciseBoard('chessboard-exercise');
+            exerciseManager.loadExercise('peon-1');
+
+            // Funciones globales
+            window.resetExercise = function() {
+                exerciseManager.resetExercise();
+            };
+
+            window.toggleSuggestion = function() {
+                const isShowing = exerciseManager.toggleSuggestions();
+                const btn = document.getElementById('show-suggestion-btn');
+                if (btn) {
+                    btn.textContent = isShowing ? 'Ocultar Sugerencia' : 'Mostrar Sugerencia';
+                }
+            };
+
+            // Renderizar todos los tableros
+            Object.values(window.boards).forEach(board => {
+                if (board && typeof board.render === 'function') {
+                    board.render();
+                }
+            });
+        });
+    </script>
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="oMWT4vhEPAcD7wO6AZRBe";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>

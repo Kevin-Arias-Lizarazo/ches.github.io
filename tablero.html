@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aprende sobre el tablero de ajedrez y el sistema de coordenadas">
+    <title>El Tablero - Aprende Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+    <nav role="navigation" aria-label="Navegación principal">
+        <ul></ul>
+    </nav>
+
+    <main id="main-content" class="container" role="main">
+        <header class="page-header">
+            <h1>El Tablero</h1>
+            <p>El tablero de ajedrez es un cuadrado de 8x8 casillas, alternando entre colores claros y oscuros.</p>
+        </header>
+
+        <div class="content-card">
+            <h2>Sistema de Coordenadas</h2>
+            <p>El tablero utiliza el sistema de notación algebraica para identificar cada casilla:</p>
+            <ul>
+                <li><strong>Filas (ranks):</strong> Numeradas del 1 al 8, desde la perspectiva del jugador blanco (1 abajo, 8 arriba)</li>
+                <li><strong>Columnas (files):</strong> Letras de la a a la h, de izquierda a derecha desde la perspectiva del jugador blanco</li>
+            </ul>
+            <p>Cada casilla tiene una identificación única, como <strong>e4</strong> o <strong>a1</strong>.</p>
+        </div>
+
+        <div class="content-card">
+            <h2>Tablero Interactivo</h2>
+            <p>Haz clic en las casillas del tablero para ver sus coordenadas.</p>
+            <div class="chessboard-container">
+                <div id="chessboard"></div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <div class="exercise-panel">
+                <h3>Ejercicio: Identificar Casillas</h3>
+                <div class="exercise-objective">
+                    <strong>Objetivo:</strong> Identifica la casilla e4 haciendo clic en ella en el tablero de arriba.
+                </div>
+                <div class="board-controls">
+                    <button class="btn btn-secondary" onclick="resetExercise()">Reiniciar Ejercicio</button>
+                </div>
+                <div id="exercise-feedback" class="exercise-feedback"></div>
+                <div id="exercise-explanation" style="display: none; margin-top: 1rem; padding: 1rem; background: #e7f3ff; border-radius: 4px;"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cargar sistema de ajedrez completo -->
+    <script src="js/chess-loader.js"></script>
+    <script src="js/navigation.js"></script>
+    
+    <script>
+        // Esperar a que el sistema de ajedrez esté cargado
+        window.addEventListener('chessSystemLoaded', function() {
+            // Ejercicio específico para esta página
+            const exercises = {
+                tablero: [
+                    {
+                        id: 'coordenadas-1',
+                        objective: 'Identifica la casilla e4 haciendo clic en ella',
+                        fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                        solution: 'e4',
+                        expectsEmptySquareClick: true,
+                        expectedSquare: 'e4',
+                        hints: ['La casilla e4 está en la columna e, fila 4', 'Busca la casilla clara en el centro del tablero'],
+                        explanation: 'La casilla e4 es una de las casillas centrales más importantes en ajedrez. Muchas aperturas comienzan con el movimiento del peón a e4.'
+                    }
+                ]
+            };
+
+            // Crear tablero principal
+            const board = new ChessBoard('chessboard', {
+                initialPosition: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                orientation: 'white',
+                allowMoves: false, // Solo visualización para este ejercicio
+                highlightValidMoves: false
+            });
+
+            // Crear gestor de ejercicios
+            const exerciseManager = new ExerciseManager();
+            exerciseManager.registerExercises(exercises);
+            exerciseManager.registerBoard('chessboard', board);
+            exerciseManager.setExerciseBoard('chessboard');
+            exerciseManager.loadExercise('coordenadas-1');
+
+            // Funciones globales para los botones
+            window.resetExercise = function() {
+                exerciseManager.resetExercise();
+            };
+
+            // Manejar clicks en casillas vacías
+            board.onEmptySquareClicked(function(square, eventData) {
+                const exercise = exerciseManager.currentExercise;
+                if (exercise && exercise.expectsEmptySquareClick) {
+                    const feedback = document.getElementById('exercise-feedback');
+                    const explanation = document.getElementById('exercise-explanation');
+                    
+                    if (square.toLowerCase() === exercise.expectedSquare.toLowerCase()) {
+                        feedback.classList.add('show', 'success');
+                        feedback.classList.remove('error');
+                        feedback.textContent = '¡Correcto! Has identificado la casilla e4 correctamente.';
+                        
+                        exerciseManager.markExerciseCompleted('coordenadas-1');
+                        
+                        if (explanation) {
+                            explanation.style.display = 'block';
+                            explanation.textContent = exercise.explanation;
+                        }
+                    } else {
+                        feedback.classList.add('show', 'error');
+                        feedback.classList.remove('success');
+                        feedback.textContent = `Has hecho clic en ${square}. Intenta hacer clic en e4.`;
+                    }
+                }
+            });
+
+            // Renderizar tablero
+            board.render();
+        });
+    </script>
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="oMWT4vhEPAcD7wO6AZRBe";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>

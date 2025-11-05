@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finales Básicos - Aprende Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav>
+        <ul></ul>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Finales Básicos</h1>
+            <p>Domina el Jaque Mate con Torre+Rey y Dama+Rey, y los finales de peones.</p>
+        </header>
+
+        <div class="content-card">
+            <h2>Jaque Mate con Torre y Rey</h2>
+            <p>Con <strong>Torre y Rey</strong> contra Rey solo, puedes dar jaque mate. El proceso requiere coordinar ambos para acorralar al rey enemigo.</p>
+            <p><strong>Proceso:</strong></p>
+            <ol style="padding-left: 2rem; line-height: 2;">
+                <li>Coloca tu torre en la misma fila o columna que el rey enemigo</li>
+                <li>Acércate con tu rey para reducir el espacio del rey enemigo</li>
+                <li>Repite hasta acorralar al rey en el borde del tablero</li>
+                <li>Usa la torre para dar el jaque mate</li>
+            </ol>
+            <div class="chessboard-container">
+                <div id="chessboard-rook-mate"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardRookMate.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Jaque Mate con Dama y Rey</h2>
+            <p>Con <strong>Dama y Rey</strong> contra Rey solo, el jaque mate es más fácil de lograr que con torre.</p>
+            <p><strong>Proceso:</strong></p>
+            <ol style="padding-left: 2rem; line-height: 2;">
+                <li>Acerca tu rey hacia el rey enemigo</li>
+                <li>Usa la dama para controlar las casillas de escape</li>
+                <li>Coordina ambos para acorralar al rey en el borde</li>
+                <li>Da jaque mate con la dama</li>
+            </ol>
+            <p><strong>Precaución:</strong> Evita el ahogado. Asegúrate de que el rey enemigo tenga al menos una casilla legal cuando no esté en jaque.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-queen-mate"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardQueenMate.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Finales de Peones</h2>
+            <p>Los finales de peones son fundamentales. Un peón pasado puede ser decisivo.</p>
+            
+            <h3>Regla del Cuadrado</h3>
+            <p>Para determinar si un peón puede ser capturado por un rey, imagina un cuadrado desde el peón hasta la casilla de promoción. Si el rey puede entrar al cuadrado, puede capturar el peón.</p>
+            
+            <h3>Peón Pasado</h3>
+            <p>Un peón pasado es muy valioso porque puede avanzar hacia la promoción sin obstáculos.</p>
+            
+            <h3>Rey Activo</h3>
+            <p>En finales de peones, el rey debe estar activo. Un rey activo puede ayudar a avanzar tus peones o detener los del oponente.</p>
+            
+            <h3>Oposición</h3>
+            <p>La oposición es cuando los reyes están frente a frente con un número impar de casillas entre ellos. El jugador que no tiene el turno tiene la oposición y puede forzar avances.</p>
+        </div>
+
+        <div class="exercise-panel">
+            <h3>Ejercicio: Practicar Final de Torre</h3>
+            <div class="exercise-objective">
+                <strong>Objetivo:</strong> Intenta dar jaque mate con la torre y el rey blancos contra el rey negro solo.
+            </div>
+            <div class="chessboard-container">
+                <div id="chessboard-exercise"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardExercise.reset()">Reiniciar Ejercicio</button>
+            </div>
+            <div id="exercise-feedback" class="exercise-feedback"></div>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/chess-engine.js"></script>
+    <script src="js/chessboard.js"></script>
+    <script>
+        // Posición para mate con torre
+        const engineRookMate = new ChessEngine();
+        engineRookMate.loadFEN('8/8/8/8/8/3k4/3R4/3K4 w - - 0 1');
+        const boardRookMate = new ChessBoard('chessboard-rook-mate', engineRookMate);
+        boardRookMate.render();
+
+        // Posición para mate con dama
+        const engineQueenMate = new ChessEngine();
+        engineQueenMate.loadFEN('8/8/8/8/8/3k4/3Q4/3K4 w - - 0 1');
+        const boardQueenMate = new ChessBoard('chessboard-queen-mate', engineQueenMate);
+        boardQueenMate.render();
+
+        // Ejercicio
+        const engineExercise = new ChessEngine();
+        engineExercise.loadFEN('8/8/8/8/8/3k4/3R4/3K4 w - - 0 1');
+        const boardExercise = new ChessBoard('chessboard-exercise', engineExercise);
+        boardExercise.render();
+        
+        boardExercise.onMoveCallback = () => {
+            engineExercise.updateCheckStatus();
+            const feedback = document.getElementById('exercise-feedback');
+            
+            if (engineExercise.isCheckmate('black')) {
+                if (feedback) {
+                    feedback.classList.add('show', 'success');
+                    feedback.textContent = '¡Felicidades! Has dado jaque mate correctamente con torre y rey.';
+                }
+            } else if (engineExercise.inCheck.black) {
+                if (feedback) {
+                    feedback.classList.add('show', 'info');
+                    feedback.textContent = '¡Bien! El rey está en jaque. Continúa acorralándolo hasta el mate.';
+                }
+            }
+        };
+    </script>
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="oMWT4vhEPAcD7wO6AZRBe";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>
+

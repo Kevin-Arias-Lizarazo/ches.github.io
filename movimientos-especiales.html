@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movimientos Especiales - Aprende Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav>
+        <ul></ul>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Movimientos Especiales</h1>
+            <p>Enroque, Captura al paso (En Passant) y Promoción del Peón.</p>
+        </header>
+
+        <div class="content-card">
+            <h2>El Enroque</h2>
+            <p>El enroque es el único movimiento donde puedes mover dos piezas a la vez: el rey y una torre.</p>
+            <p><strong>Condiciones para enrocar:</strong></p>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li>Ni el rey ni la torre han sido movidos anteriormente</li>
+                <li>No hay piezas entre el rey y la torre</li>
+                <li>El rey no está en jaque</li>
+                <li>El rey no pasa por una casilla que está siendo atacada</li>
+            </ul>
+            <p><strong>Tipos de enroque:</strong></p>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li><strong>Enroque corto (kingside):</strong> El rey se mueve dos casillas hacia la torre del lado del rey, y la torre salta sobre el rey.</li>
+                <li><strong>Enroque largo (queenside):</strong> El rey se mueve dos casillas hacia la torre del lado de la dama, y la torre salta sobre el rey.</li>
+            </ul>
+            <div class="chessboard-container">
+                <div id="chessboard-castle"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardCastle.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Captura al Paso (En Passant)</h2>
+            <p>Si un peón avanza dos casillas desde su posición inicial y pasa junto a un peón enemigo, el peón enemigo puede capturarlo como si hubiera avanzado solo una casilla.</p>
+            <p>Esta captura solo puede realizarse <strong>inmediatamente después</strong> de que el peón haya avanzado dos casillas.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-enpassant"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardEnPassant.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Promoción del Peón</h2>
+            <p>Cuando un peón alcanza la última fila del tablero (fila 8 para blancas, fila 1 para negras), debe ser <strong>promovido</strong> a una pieza más poderosa.</p>
+            <p>El peón puede ser promovido a <strong>Dama, Torre, Alfil o Caballo</strong>. Casi siempre se elige la Dama por ser la pieza más poderosa.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-promotion"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardPromotion.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="exercise-panel">
+            <h3>Ejercicio: Realizar Enroque</h3>
+            <div class="exercise-objective">
+                <strong>Objetivo:</strong> Realiza el enroque corto con las piezas blancas.
+            </div>
+            <div class="chessboard-container">
+                <div id="chessboard-exercise"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardExercise.reset()">Reiniciar Ejercicio</button>
+            </div>
+            <div id="exercise-feedback" class="exercise-feedback"></div>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/chess-engine.js"></script>
+    <script src="js/chessboard.js"></script>
+    <script>
+        const engineCastle = new ChessEngine();
+        const boardCastle = new ChessBoard('chessboard-castle', engineCastle);
+        boardCastle.render();
+
+        const engineEnPassant = new ChessEngine();
+        engineEnPassant.loadFEN('8/8/8/3pP3/8/8/8/8 w - d6 0 1');
+        const boardEnPassant = new ChessBoard('chessboard-enpassant', engineEnPassant);
+        boardEnPassant.render();
+
+        const enginePromotion = new ChessEngine();
+        enginePromotion.loadFEN('8/4P3/8/8/8/8/8/8 w - - 0 1');
+        const boardPromotion = new ChessBoard('chessboard-promotion', enginePromotion);
+        boardPromotion.render();
+
+        const engineExercise = new ChessEngine();
+        const boardExercise = new ChessBoard('chessboard-exercise', engineExercise);
+        boardExercise.render();
+        
+        boardExercise.onMoveCallback = () => {
+            const lastMove = engineExercise.moveHistory[engineExercise.moveHistory.length - 1];
+            if (!lastMove) return;
+            
+            const feedback = document.getElementById('exercise-feedback');
+            // Verificar si se realizó enroque (movimiento del rey de e1 a g1)
+            const move = lastMove.notation;
+            if (move.includes('e1g1') || move.includes('O-O')) {
+                if (feedback) {
+                    feedback.classList.add('show', 'success');
+                    feedback.classList.remove('error');
+                    feedback.textContent = '¡Correcto! Has realizado el enroque corto correctamente.';
+                }
+            } else {
+                if (feedback) {
+                    feedback.classList.add('show', 'error');
+                    feedback.classList.remove('success');
+                    feedback.textContent = 'Intenta realizar el enroque corto moviendo el rey hacia la torre del lado del rey.';
+                }
+            }
+        };
+    </script>
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="oMWT4vhEPAcD7wO6AZRBe";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>
+

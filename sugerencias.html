@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sugerencias - Aprende Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav>
+        <ul></ul>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Sugerencias y Contacto</h1>
+            <p>Tu opinión es importante. Comparte tus sugerencias para mejorar este sitio web.</p>
+        </header>
+
+        <div class="content-card">
+            <h2>Envíanos tus Sugerencias</h2>
+            <p>¿Tienes alguna sugerencia para mejorar el contenido, los ejercicios o la funcionalidad del sitio? ¿Encontraste algún error? ¡Nos encantaría escucharte!</p>
+        </div>
+
+        <div class="content-card">
+            <div id="form-success" class="form-success"></div>
+            
+            <form id="suggestions-form" action="https://formspree.io/f/meopygly" method="POST">
+                <div class="form-group">
+                    <label for="email">Tu email <span style="color: var(--accent-color);">*</span></label>
+                    <input type="email" name="email" id="email" required>
+                    <div class="form-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Tu nombre (opcional)</label>
+                    <input type="text" name="name" id="name">
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Categoría</label>
+                    <select name="category" id="category">
+                        <option value="general">General</option>
+                        <option value="contenido">Contenido</option>
+                        <option value="ejercicios">Ejercicios</option>
+                        <option value="errores">Errores</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Tu mensaje <span style="color: var(--accent-color);">*</span></label>
+                    <textarea name="message" id="message" rows="6" required minlength="10"></textarea>
+                    <div class="form-error"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+        </div>
+
+        <div class="content-card">
+            <h2>¿Qué Puedes Sugerir?</h2>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li><strong>Mejoras en el contenido:</strong> Temas adicionales, explicaciones más claras, ejemplos</li>
+                <li><strong>Nuevos ejercicios:</strong> Ideas para ejercicios interactivos que te gustaría ver</li>
+                <li><strong>Funcionalidades:</strong> Características nuevas que mejorarían tu experiencia de aprendizaje</li>
+                <li><strong>Errores:</strong> Si encuentras algún error en el contenido o en el funcionamiento del sitio</li>
+                <li><strong>Feedback general:</strong> Cualquier otra sugerencia o comentario</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/form-handler.js"></script>
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="oMWT4vhEPAcD7wO6AZRBe";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>
+

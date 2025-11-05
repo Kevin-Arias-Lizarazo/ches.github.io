@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aperturas Comunes - Aprende Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav>
+        <ul></ul>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Aperturas Comunes</h1>
+            <p>Introducción a la Apertura Italiana, Ruy López y Gambito de Dama.</p>
+        </header>
+
+        <div class="content-card">
+            <h2>Apertura Italiana</h2>
+            <p>La <strong>Apertura Italiana</strong> es una apertura clásica que comienza con:</p>
+            <ol style="padding-left: 2rem; line-height: 2;">
+                <li>e4 e5</li>
+                <li>Cf3 Cc6</li>
+                <li>Ac4</li>
+            </ol>
+            <p>Esta apertura apunta directamente a la casilla f7, que es la casilla más débil en la posición inicial de las negras.</p>
+            <p><strong>Ventajas:</strong> Desarrollo rápido, control del centro, ataque directo.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-italian"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-primary" onclick="playItalian()">Reproducir Secuencia</button>
+                <button class="btn btn-secondary" onclick="boardItalian.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Ruy López (Apertura Española)</h2>
+            <p>La <strong>Ruy López</strong> es una de las aperturas más populares y estudiadas. Comienza con:</p>
+            <ol style="padding-left: 2rem; line-height: 2;">
+                <li>e4 e5</li>
+                <li>Cf3 Cc6</li>
+                <li>Ab5</li>
+            </ol>
+            <p>Esta apertura presiona al caballo en c6 y prepara el enroque.</p>
+            <p><strong>Ventajas:</strong> Presión sobre el centro, desarrollo sólido, muchas variantes posibles.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-ruy"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-primary" onclick="playRuy()">Reproducir Secuencia</button>
+                <button class="btn btn-secondary" onclick="boardRuy.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Gambito de Dama</h2>
+            <p>El <strong>Gambito de Dama</strong> es una apertura donde las blancas sacrifican un peón para obtener ventaja de desarrollo:</p>
+            <ol style="padding-left: 2rem; line-height: 2;">
+                <li>d4 d5</li>
+                <li>c4</li>
+            </ol>
+            <p>Las blancas ofrecen el peón de c4. Si las negras lo capturan, las blancas obtienen desarrollo rápido y control del centro.</p>
+            <p><strong>Concepto clave:</strong> Intercambiar material por tiempo y espacio.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-gambit"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-primary" onclick="playGambit()">Reproducir Secuencia</button>
+                <button class="btn btn-secondary" onclick="boardGambit.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="exercise-panel">
+            <h3>Ejercicio: Jugar Apertura Italiana</h3>
+            <div class="exercise-objective">
+                <strong>Objetivo:</strong> Reproduce las primeras tres jugadas de la Apertura Italiana: e4, Cf3, Ac4.
+            </div>
+            <div class="chessboard-container">
+                <div id="chessboard-exercise"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardExercise.reset()">Reiniciar Ejercicio</button>
+            </div>
+            <div id="exercise-feedback" class="exercise-feedback"></div>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/chess-engine.js"></script>
+    <script src="js/chessboard.js"></script>
+    <script>
+        const engineItalian = new ChessEngine();
+        const boardItalian = new ChessBoard('chessboard-italian', engineItalian);
+        boardItalian.render();
+
+        const engineRuy = new ChessEngine();
+        const boardRuy = new ChessBoard('chessboard-ruy', engineRuy);
+        boardRuy.render();
+
+        const engineGambit = new ChessEngine();
+        const boardGambit = new ChessBoard('chessboard-gambit', engineGambit);
+        boardGambit.render();
+
+        function playItalian() {
+            boardItalian.reset();
+            setTimeout(() => {
+                engineItalian.makeMove(6, 4, 4, 4); // e4
+                engineItalian.makeMove(1, 4, 3, 4); // e5
+                boardItalian.render();
+                setTimeout(() => {
+                    engineItalian.makeMove(7, 6, 5, 5); // Cf3
+                    engineItalian.makeMove(0, 1, 2, 2); // Cc6
+                    boardItalian.render();
+                    setTimeout(() => {
+                        engineItalian.makeMove(7, 5, 4, 2); // Ac4
+                        boardItalian.render();
+                    }, 1000);
+                }, 1000);
+            }, 500);
+        }
+
+        function playRuy() {
+            boardRuy.reset();
+            setTimeout(() => {
+                engineRuy.makeMove(6, 4, 4, 4); // e4
+                engineRuy.makeMove(1, 4, 3, 4); // e5
+                boardRuy.render();
+                setTimeout(() => {
+                    engineRuy.makeMove(7, 6, 5, 5); // Cf3
+                    engineRuy.makeMove(0, 1, 2, 2); // Cc6
+                    boardRuy.render();
+                    setTimeout(() => {
+                        engineRuy.makeMove(7, 5, 3, 1); // Ab5
+                        boardRuy.render();
+                    }, 1000);
+                }, 1000);
+            }, 500);
+        }
+
+        function playGambit() {
+            boardGambit.reset();
+            setTimeout(() => {
+                engineGambit.makeMove(6, 3, 4, 3); // d4
+                engineGambit.makeMove(1, 3, 3, 3); // d5
+                boardGambit.render();
+                setTimeout(() => {
+                    engineGambit.makeMove(6, 2, 4, 2); // c4
+                    boardGambit.render();
+                }, 1000);
+            }, 500);
+        }
+
+        const engineExercise = new ChessEngine();
+        const boardExercise = new ChessBoard('chessboard-exercise', engineExercise);
+        boardExercise.render();
+        
+        let expectedMoves = ['e2e4', 'g1f3', 'f1c4'];
+        let moveIndex = 0;
+        
+        boardExercise.onMoveCallback = () => {
+            const lastMove = engineExercise.moveHistory[engineExercise.moveHistory.length - 1];
+            if (!lastMove) return;
+            
+            const feedback = document.getElementById('exercise-feedback');
+            const move = lastMove.notation.substring(0, 4);
+            
+            if (feedback) {
+                feedback.classList.add('show');
+                
+                if (moveIndex < expectedMoves.length && move === expectedMoves[moveIndex]) {
+                    moveIndex++;
+                    if (moveIndex < expectedMoves.length) {
+                        feedback.classList.add('info');
+                        feedback.classList.remove('error', 'success');
+                        feedback.textContent = `¡Correcto! Ahora ejecuta: ${expectedMoves[moveIndex]}`;
+                    } else {
+                        feedback.classList.add('success');
+                        feedback.classList.remove('error', 'info');
+                        feedback.textContent = '¡Excelente! Has completado la Apertura Italiana correctamente.';
+                    }
+                } else {
+                    feedback.classList.add('error');
+                    feedback.classList.remove('success', 'info');
+                    feedback.textContent = 'Movimiento incorrecto. Intenta seguir la secuencia: e4, Cf3, Ac4.';
+                }
+            }
+        };
+    </script>
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="oMWT4vhEPAcD7wO6AZRBe";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>
+

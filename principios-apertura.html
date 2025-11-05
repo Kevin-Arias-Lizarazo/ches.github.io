@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principios de Apertura - Aprende Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav>
+        <ul></ul>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Principios de Apertura</h1>
+            <p>Control del centro, Desarrollo de piezas y Seguridad del Rey.</p>
+        </header>
+
+        <div class="content-card">
+            <h2>Control del Centro</h2>
+            <p>El centro del tablero (casillas e4, e5, d4, d5) es el área más importante. Controlar el centro te da más espacio y mejores opciones para tus piezas.</p>
+            <p><strong>Estrategias para controlar el centro:</strong></p>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li>Colocar peones en el centro (e4, e5, d4, d5)</li>
+                <li>Desarrollar piezas que apunten hacia el centro</li>
+                <li>Intercambiar piezas centrales si es ventajoso</li>
+            </ul>
+            <div class="chessboard-container">
+                <div id="chessboard-center"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardCenter.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Desarrollo de Piezas</h2>
+            <p>Desarrollar significa sacar tus piezas de sus casillas iniciales y colocarlas en posiciones activas.</p>
+            <p><strong>Orden de desarrollo recomendado:</strong></p>
+            <ol style="padding-left: 2rem; line-height: 2;">
+                <li>Mover los peones centrales (e4/e5, d4/d5)</li>
+                <li>Desarrollar los caballos hacia el centro</li>
+                <li>Desarrollar los alfiles</li>
+                <li>Enrocar el rey</li>
+                <li>Conectar las torres</li>
+            </ol>
+            <div class="chessboard-container">
+                <div id="chessboard-development"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardDevelopment.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Seguridad del Rey</h2>
+            <p>Proteger tu rey es fundamental. La mejor forma de hacerlo en la apertura es mediante el <strong>enroque</strong>.</p>
+            <p><strong>Ventajas del enroque:</strong></p>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li>Mueve el rey a una posición más segura</li>
+                <li>Activa la torre conectándola con el juego</li>
+                <li>Centraliza el rey detrás de una barrera de peones</li>
+            </ul>
+            <p><strong>Principios de seguridad:</strong></p>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li>No muevas el mismo peón varias veces en la apertura</li>
+                <li>No saques la dama demasiado pronto</li>
+                <li>No desarrolles todas las piezas hacia el mismo lado</li>
+            </ul>
+        </div>
+
+        <div class="exercise-panel">
+            <h3>Ejercicio: Aplicar Principios de Apertura</h3>
+            <div class="exercise-objective">
+                <strong>Objetivo:</strong> Realiza los primeros movimientos siguiendo los principios de apertura: mueve el peón central y desarrolla un caballo.
+            </div>
+            <div class="chessboard-container">
+                <div id="chessboard-exercise"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardExercise.reset()">Reiniciar Ejercicio</button>
+            </div>
+            <div id="exercise-feedback" class="exercise-feedback"></div>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/chess-engine.js"></script>
+    <script src="js/chessboard.js"></script>
+    <script>
+        const engineCenter = new ChessEngine();
+        const boardCenter = new ChessBoard('chessboard-center', engineCenter);
+        boardCenter.render();
+
+        const engineDevelopment = new ChessEngine();
+        engineDevelopment.loadFEN('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1');
+        const boardDevelopment = new ChessBoard('chessboard-development', engineDevelopment);
+        boardDevelopment.render();
+
+        const engineExercise = new ChessEngine();
+        const boardExercise = new ChessBoard('chessboard-exercise', engineExercise);
+        boardExercise.render();
+        
+        let moveCount = 0;
+        boardExercise.onMoveCallback = () => {
+            moveCount++;
+            const feedback = document.getElementById('exercise-feedback');
+            
+            if (moveCount === 1) {
+                const lastMove = engineExercise.moveHistory[engineExercise.moveHistory.length - 1];
+                const move = lastMove.notation.substring(0, 4);
+                if (move === 'e2e4' || move === 'e2e3' || move === 'd2d4' || move === 'd2d3') {
+                    if (feedback) {
+                        feedback.classList.add('show', 'success');
+                        feedback.textContent = '¡Bien! Has movido un peón central. Ahora desarrolla un caballo.';
+                    }
+                }
+            } else if (moveCount >= 2) {
+                const lastMove = engineExercise.moveHistory[engineExercise.moveHistory.length - 1];
+                const piece = lastMove.piece;
+                if (piece && piece.type === 'knight') {
+                    if (feedback) {
+                        feedback.classList.add('show', 'success');
+                        feedback.textContent = '¡Excelente! Has aplicado correctamente los principios de apertura.';
+                    }
+                }
+            }
+        };
+    </script>
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="oMWT4vhEPAcD7wO6AZRBe";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>
+

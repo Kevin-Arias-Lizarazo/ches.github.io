@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Táctica Básica - Aprende Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav>
+        <ul></ul>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Táctica Básica</h1>
+            <p>Identifica y ejecuta ataques dobles, clavadas y ataques al descubierto.</p>
+        </header>
+
+        <div class="content-card">
+            <h2>Ataques Dobles (Fork)</h2>
+            <p>Un <strong>ataque doble</strong> ocurre cuando una pieza ataca dos piezas enemigas al mismo tiempo.</p>
+            <p>La pieza más común para realizar ataques dobles es el <strong>caballo</strong>, debido a su movimiento único.</p>
+            <p><strong>Ejemplo:</strong> Un caballo atacando simultáneamente al rey y a la dama enemigos.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-fork"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardFork.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Clavadas</h2>
+            <p>Una <strong>clavada</strong> ocurre cuando una pieza no puede moverse porque dejaría expuesta una pieza más valiosa detrás de ella.</p>
+            <p>Las piezas que comúnmente realizan clavadas son la <strong>torre</strong>, el <strong>alfil</strong> y la <strong>dama</strong>.</p>
+            <p><strong>Tipos de clavadas:</strong></p>
+            <ul style="padding-left: 2rem; line-height: 2;">
+                <li><strong>Clavada absoluta:</strong> La pieza no puede moverse porque dejaría al rey en jaque</li>
+                <li><strong>Clavada relativa:</strong> La pieza puede moverse pero perdería una pieza más valiosa</li>
+            </ul>
+            <div class="chessboard-container">
+                <div id="chessboard-pin"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardPin.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2>Ataques al Descubierto</h2>
+            <p>Un <strong>ataque al descubierto</strong> ocurre cuando una pieza se mueve, revelando un ataque de otra pieza detrás de ella.</p>
+            <p>Estos ataques pueden ser muy poderosos porque atacan dos objetivos al mismo tiempo.</p>
+            <p><strong>Ejemplo:</strong> Mover una torre para descubrir un ataque del alfil al rey enemigo.</p>
+            <div class="chessboard-container">
+                <div id="chessboard-discovered"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardDiscovered.reset()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="exercise-panel">
+            <h3>Ejercicio: Identificar Ataque Doble</h3>
+            <div class="exercise-objective">
+                <strong>Objetivo:</strong> Identifica el ataque doble del caballo blanco en la posición mostrada.
+            </div>
+            <div class="chessboard-container">
+                <div id="chessboard-exercise"></div>
+            </div>
+            <div class="board-controls">
+                <button class="btn btn-secondary" onclick="boardExercise.reset()">Reiniciar Ejercicio</button>
+            </div>
+            <div id="exercise-feedback" class="exercise-feedback"></div>
+        </div>
+    </div>
+
+    <script src="js/navigation.js"></script>
+    <script src="js/chess-engine.js"></script>
+    <script src="js/chessboard.js"></script>
+    <script>
+        // Posición con fork
+        const engineFork = new ChessEngine();
+        engineFork.loadFEN('rnbqkb1r/pppp1ppp/5n2/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 1');
+        const boardFork = new ChessBoard('chessboard-fork', engineFork);
+        boardFork.render();
+
+        // Posición con clavada
+        const enginePin = new ChessEngine();
+        enginePin.loadFEN('rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1');
+        const boardPin = new ChessBoard('chessboard-pin', enginePin);
+        boardPin.render();
+
+        // Posición con ataque al descubierto
+        const engineDiscovered = new ChessEngine();
+        engineDiscovered.loadFEN('rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1');
+        const boardDiscovered = new ChessBoard('chessboard-discovered', engineDiscovered);
+        boardDiscovered.render();
+
+        // Ejercicio
+        const engineExercise = new ChessEngine();
+        engineExercise.loadFEN('rnbqkb1r/pppp1ppp/5n2/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 1');
+        const boardExercise = new ChessBoard('chessboard-exercise', engineExercise);
+        boardExercise.render();
+        
+        setTimeout(() => {
+            const feedback = document.getElementById('exercise-feedback');
+            if (feedback) {
+                feedback.classList.add('show', 'info');
+                feedback.textContent = 'Observa cómo el caballo blanco en f3 puede atacar múltiples casillas. Busca una posición donde pueda atacar dos piezas a la vez.';
+            }
+        }, 1000);
+    </script>
+    <script>
+        (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="oMWT4vhEPAcD7wO6AZRBe";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+    </script>
+</body>
+</html>
+
