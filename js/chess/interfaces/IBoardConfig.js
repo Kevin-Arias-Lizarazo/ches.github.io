@@ -1,21 +1,15 @@
-// Interfaz para configuración inicial del tablero
-/**
- * Interfaz IBoardConfig
- * Define el contrato para configuración del tablero
- */
 class IBoardConfig {
-    /**
-     * Constructor - debe aceptar un objeto de configuración
-     * @param {Object} config - Configuración inicial
-     */
     constructor(config = {}) {
-        this.initialPosition = config.initialPosition || 'start'; // 'start', FEN string, o objeto BoardState
-        this.orientation = config.orientation || 'white'; // 'white' o 'black'
-        this.allowMoves = config.allowMoves !== false; // true por defecto
-        this.highlightValidMoves = config.highlightValidMoves !== false; // true por defecto
-        this.showCoordinates = config.showCoordinates !== false; // true por defecto
-        this.moveHandler = config.moveHandler || null; // Instancia de IMoveHandler
-        this.boardProvider = config.boardProvider || null; // Instancia de IBoardProvider
+        this.initialPosition = config.initialPosition || 'start';
+        this.orientation = config.orientation || 'white';
+        this.allowMoves = config.allowMoves !== false;
+        this.highlightValidMoves = config.highlightValidMoves !== false;
+        this.showCoordinates = config.showCoordinates !== false;
+        this.moveHandler = config.moveHandler || null;
+        this.boardProvider = config.boardProvider || null;
+        this.boardSize = config.boardSize || 8;
+        this.squareColorStart = config.squareColorStart || 'dark';
+        this.onUpdateRequired = config.onUpdateRequired || null;
     }
 
     /**
@@ -66,12 +60,20 @@ class IBoardConfig {
         return this.moveHandler;
     }
 
-    /**
-     * Obtener proveedor de estado del tablero
-     * @returns {IBoardProvider|null}
-     */
     getBoardProvider() {
         return this.boardProvider;
+    }
+
+    getBoardSize() {
+        return this.boardSize;
+    }
+
+    getSquareColorStart() {
+        return this.squareColorStart;
+    }
+
+    getOnUpdateRequired() {
+        return this.onUpdateRequired;
     }
 }
 

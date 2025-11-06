@@ -1,4 +1,3 @@
-// Vista del Tablero - Solo renderizado visual
 class BoardView {
     constructor(containerId, options = {}) {
         this.containerId = containerId;
@@ -10,11 +9,13 @@ class BoardView {
         this.options = {
             showCoordinates: options.showCoordinates !== false,
             orientation: options.orientation || 'white',
+            boardSize: options.boardSize || 8,
+            squareColorStart: options.squareColorStart || 'dark',
             ...options
         };
 
-        this.squares = new Map(); // Map<square, SquareView>
-        this.eventListeners = new Map(); // Map<event, Array<callbacks>>
+        this.squares = new Map();
+        this.eventListeners = new Map();
         this.selectedSquare = null;
         this.lastMove = null;
         this.suggestedMove = null;
@@ -32,27 +33,25 @@ class BoardView {
         this.container.setAttribute('role', 'application');
         this.container.setAttribute('aria-label', 'Tablero de ajedrez interactivo');
         this.container.className = 'chessboard-container';
-        
-        // Crear grid para el tablero
+
         const boardGrid = document.createElement('div');
         boardGrid.id = `${this.containerId}-grid`;
         boardGrid.className = 'chessboard-grid';
         boardGrid.style.display = 'grid';
-        boardGrid.style.gridTemplateColumns = 'repeat(8, 1fr)';
-        boardGrid.style.gridTemplateRows = 'repeat(8, 1fr)';
+        boardGrid.style.gridTemplateColumns = `repeat(${this.options.boardSize}, 1fr)`;
+        boardGrid.style.gridTemplateRows = `repeat(${this.options.boardSize}, 1fr)`;
         boardGrid.style.width = '100%';
         boardGrid.style.aspectRatio = '1';
         boardGrid.style.border = '3px solid var(--primary-color)';
         boardGrid.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-        
+
         this.container.appendChild(boardGrid);
 
-        // Crear casillas
-        const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-        const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
+        const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].slice(0, this.options.boardSize);
+        const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'].slice(0, this.options.boardSize);
 
-        for (let row = 0; row < 8; row++) {
-            for (let col = 0; col < 8; col++) {
+        for (let row = 0; row < this.options.boardSize; row++) {
+            for (let col = 0; col < this.options.boardSize; col++) {
                 const rank = ranks[row];
                 const file = files[col];
                 const square = file + rank;
@@ -65,19 +64,18 @@ class BoardView {
 
     render(boardState) {
         if (!boardState) {
-            // Si no hay estado, renderizar tablero vacío
             boardState = {
-                board: Array(8).fill(null).map(() => Array(8).fill(null)),
+                board: Array(this.options.boardSize).fill(null).map(() => Array(this.options.boardSize).fill(null)),
                 currentPlayer: 'white'
             };
         }
 
         const squares = boardState.board || [];
-        const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-        const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
+        const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].slice(0, this.options.boardSize);
+        const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'].slice(0, this.options.boardSize);
 
-        for (let row = 0; row < 8; row++) {
-            for (let col = 0; col < 8; col++) {
+        for (let row = 0; row < this.options.boardSize; row++) {
+            for (let col = 0; col < this.options.boardSize; col++) {
                 const rank = ranks[row];
                 const file = files[col];
                 const square = file + rank;
@@ -85,17 +83,15 @@ class BoardView {
                 const squareView = this.squares.get(square);
                 if (!squareView) continue;
 
-                // Obtener pieza
                 const pieceData = squares[row] && squares[row][col];
-                const piece = pieceData ? new Piece(pieceData.type, pieceData.color, square) : null;
+                const piece = pieceData ? new Piece(pieceData.type, pieceData.color, square, pieceData.id) : null;
 
-                // Determinar estado de la casilla
                 const state = {
                     selected: this.selectedSquare === square,
-                    validMove: false, // Se establecerá desde fuera
-                    lastMove: this.lastMove && 
+                    validMove: false,
+                    lastMove: this.lastMove &&
                         (this.lastMove.from === square || this.lastMove.to === square),
-                    inCheck: false, // Se establecerá desde fuera
+                    inCheck: false,
                     suggestedFrom: this.suggestedMove && this.suggestedMove.from === square,
                     suggestedTo: this.suggestedMove && this.suggestedMove.to === square
                 };
@@ -103,6 +99,44 @@ class BoardView {
                 squareView.render(piece, state);
             }
         }
+    }
+
+    getHTML() {
+        if (!this.container) return '';
+
+        const boardGrid = this.container.querySelector('.chessboard-grid');
+        if (!boardGrid) return '';
+
+        return boardGrid.innerHTML;
+    }
+
+    renderAsHTML() {
+        const startColor = this.options.squareColorStart === 'light' ? 1 : 0;
+        const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].slice(0, this.options.boardSize);
+        const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'].slice(0, this.options.boardSize);
+
+        let html = `<div class="chessboard-grid" style="display: grid; grid-template-columns: repeat(${this.options.boardSize}, 1fr); grid-template-rows: repeat(${this.options.boardSize}, 1fr); width: 100%; aspect-ratio: 1; border: 3px solid var(--primary-color); box-shadow: 0 4px 12px rgba(0,0,0,0.2);">`;
+
+        for (let row = 0; row < this.options.boardSize; row++) {
+            for (let col = 0; col < this.options.boardSize; col++) {
+                const rank = ranks[row];
+                const file = files[col];
+                const square = file + rank;
+
+                const isLight = (row + col + startColor) % 2 === 1;
+                const squareClass = isLight ? 'light' : 'dark';
+
+                const squareView = this.squares.get(square);
+                const pieceHtml = squareView && squareView.pieceView
+                    ? `<div class="piece ${squareView.pieceView.piece.color}" data-piece="${squareView.pieceView.piece.type}" data-color="${squareView.pieceView.piece.color}" data-piece-id="${squareView.pieceView.piece.id}" data-piece-name="${squareView.pieceView.piece.getName()}">${squareView.pieceView.piece.getSymbol()}</div>`
+                    : '';
+
+                html += `<div class="chess-square ${squareClass}" data-square="${square}" data-row="${row}" data-col="${col}">${pieceHtml}</div>`;
+            }
+        }
+
+        html += '</div>';
+        return html;
     }
 
     highlightSquare(square, highlightType = 'selected') {
@@ -165,53 +199,38 @@ class BoardView {
 
     attachEventListeners() {
         this.squares.forEach((squareView, square) => {
-            // Click en casilla
-            squareView.addEventListener('click', (square, eventData) => {
+            squareView.on('click', (square, eventData) => {
                 this.emit('square-clicked', square, eventData);
-                
+
                 if (eventData.isEmpty) {
                     this.emit('empty-square-clicked', square, eventData);
                 }
             });
 
-            // Click en pieza
-            if (squareView.element) {
-                const pieceElement = squareView.element.querySelector('.piece');
-                if (pieceElement) {
-                    pieceElement.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.emit('square-clicked', square, {
-                            isEmpty: false,
-                            piece: {
-                                type: pieceElement.dataset.piece,
-                                color: pieceElement.dataset.color
-                            },
-                            square: square,
-                            event: e
-                        });
+            if (squareView.pieceView) {
+                squareView.pieceView.on('click', (pieceData) => {
+                    this.emit('piece-clicked', {
+                        ...pieceData,
+                        square: square
                     });
-                }
-            }
+                });
 
-            // Drag and drop
-            if (squareView.element) {
-                const pieceElement = squareView.element.querySelector('.piece');
-                if (pieceElement) {
-                    pieceElement.addEventListener('mousedown', (e) => {
-                        this.emit('piece-drag-start', square, {
-                            piece: {
-                                type: pieceElement.dataset.piece,
-                                color: pieceElement.dataset.color
-                            },
-                            square: square,
-                            event: e
-                        });
+                squareView.pieceView.on('mousedown', (pieceData) => {
+                    this.emit('piece-drag-start', {
+                        ...pieceData,
+                        square: square
                     });
-                }
+                });
+
+                squareView.pieceView.on('dragstart', (pieceData) => {
+                    this.emit('piece-drag-start', {
+                        ...pieceData,
+                        square: square
+                    });
+                });
             }
         });
 
-        // Eventos globales de drag
         document.addEventListener('mousemove', (e) => {
             this.emit('piece-drag', null, { event: e });
         });

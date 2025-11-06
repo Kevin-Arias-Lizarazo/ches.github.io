@@ -1,9 +1,48 @@
 // Modelo de Pieza
 class Piece {
-    constructor(type, color, square = null) {
-        this.type = type; // 'pawn', 'rook', 'knight', 'bishop', 'queen', 'king'
-        this.color = color; // 'white' o 'black'
-        this.square = square; // 'e4', 'a1', etc.
+    constructor(type, color, square = null, id = null) {
+        this.type = type;
+        this.color = color;
+        this.square = square;
+        this.id = id || this.generateUniqueId();
+    }
+
+    generateUniqueId() {
+        return `${this.color}-${this.type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    }
+
+    getName() {
+        const fullName = {
+            white: {
+                king: 'white-king',
+                queen: 'white-queen',
+                rook: 'white-rook',
+                bishop: 'white-bishop',
+                knight: 'white-knight',
+                pawn: 'white-pawn'
+            },
+            black: {
+                king: 'black-king',
+                queen: 'black-queen',
+                rook: 'black-rook',
+                bishop: 'black-bishop',
+                knight: 'black-knight',
+                pawn: 'black-pawn'
+            }
+        };
+        return fullName[this.color]?.[this.type] || `${this.color}-${this.type}`;
+    }
+
+    getPieceLabel() {
+        const labels = {
+            king: 'Rey',
+            queen: 'Dama',
+            rook: 'Torre',
+            bishop: 'Alfil',
+            knight: 'Caballo',
+            pawn: 'Peón'
+        };
+        return labels[this.type] || this.type;
     }
 
     getSymbol() {
@@ -28,18 +67,6 @@ class Piece {
         return symbols[this.color]?.[this.type] || '';
     }
 
-    getName() {
-        const names = {
-            king: 'Rey',
-            queen: 'Dama',
-            rook: 'Torre',
-            bishop: 'Alfil',
-            knight: 'Caballo',
-            pawn: 'Peón'
-        };
-        return names[this.type] || this.type;
-    }
-
     getValue() {
         const values = {
             pawn: 1,
@@ -54,11 +81,16 @@ class Piece {
 
     equals(other) {
         if (!other) return false;
+        return this.type === other.type && this.color === other.color && this.id === other.id;
+    }
+
+    equalsTypeAndColor(other) {
+        if (!other) return false;
         return this.type === other.type && this.color === other.color;
     }
 
     clone() {
-        return new Piece(this.type, this.color, this.square);
+        return new Piece(this.type, this.color, this.square, this.id);
     }
 
     toFEN() {

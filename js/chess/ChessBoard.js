@@ -1,47 +1,43 @@
-// Clase Principal ChessBoard - Integra todo con inversión de dependencias
-// Soporta múltiples instancias en la misma página
 class ChessBoard {
     constructor(containerId, config = {}) {
-        // Validar que el contenedor existe y es único
         const container = document.getElementById(containerId);
         if (!container) {
             throw new Error(`Contenedor con ID '${containerId}' no encontrado`);
         }
 
         this.containerId = containerId;
+        this.boardId = `board-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         this.config = new BoardConfig(config);
-        
-        // Crear componentes con inversión de dependencias
+
         this.model = new BoardModel();
         this.view = new BoardView(containerId, {
             showCoordinates: this.config.shouldShowCoordinates(),
-            orientation: this.config.getOrientation()
+            orientation: this.config.getOrientation(),
+            boardSize: this.config.getBoardSize(),
+            squareColorStart: this.config.getSquareColorStart()
         });
         this.controller = new BoardController();
 
-        // Crear o usar servicios inyectados
         this.moveHandler = this.config.getMoveHandler() || new ChessEngine();
         this.boardProvider = this.config.getBoardProvider() || this.moveHandler;
         this.moveValidator = new MoveValidator(this.boardProvider);
 
-        // Inyectar dependencias en el controlador
         this.controller.setModel(this.model);
         this.controller.setView(this.view);
         this.controller.setMoveHandler(this.moveHandler);
         this.controller.setMoveValidator(this.moveValidator);
 
-        // Configurar estado inicial
         this.initializeBoard(this.config.getInitialPosition());
-
-        // Conectar eventos del controlador con namespace único
         this.setupEventHandlers();
 
-        // Registrar instancia globalmente para debugging y gestión
         ChessBoard.instances = ChessBoard.instances || new Map();
         ChessBoard.instances.set(containerId, this);
 
-        // Renderizar inicial
         this.controller.render();
+
+        if (this.config.getOnUpdateRequired()) {
+            this.config.getOnUpdateRequired()(this);
+        }
     }
 
     initializeBoard(initialPosition) {
@@ -257,10 +253,8 @@ class ChessBoard {
         this.on('empty-square-clicked', callback);
     }
 
-    // Mostrar sugerencias
     showSuggestions(move) {
         if (move && typeof move === 'string') {
-            // Si es string UCI, convertir a Move
             move = NotationParser.parseUCI(move);
         }
         this.controller.showSuggestions(move);
@@ -272,9 +266,16 @@ class ChessBoard {
         this.controller.render();
     }
 
-    // Renderizar
     render() {
         this.controller.render();
+    }
+
+    renderAsHTML() {
+        return this.view.renderAsHTML();
+    }
+
+    getHTML() {
+        return this.view.getHTML();
     }
 
     // Obtener estado

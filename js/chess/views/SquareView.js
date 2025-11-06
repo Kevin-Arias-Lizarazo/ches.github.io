@@ -1,15 +1,17 @@
-// Vista de Casilla Individual
 class SquareView {
     constructor(square, container, options = {}) {
-        this.square = square; // 'e4'
-        this.container = container; // Elemento DOM
+        this.square = square;
+        this.container = container;
         this.options = {
             showCoordinates: options.showCoordinates !== false,
             orientation: options.orientation || 'white',
+            boardSize: options.boardSize || 8,
+            squareColorStart: options.squareColorStart || 'dark',
             ...options
         };
         this.element = null;
-        this.pieceElement = null;
+        this.pieceView = null;
+        this.eventListeners = new Map();
         this.state = {
             selected: false,
             validMove: false,
@@ -33,8 +35,10 @@ class SquareView {
     createElement() {
         this.element = document.createElement('div');
         const [row, col] = this.squareToCoords(this.square);
-        const isLight = (row + col) % 2 === 0;
-        
+
+        const startColor = this.options.squareColorStart === 'light' ? 1 : 0;
+        const isLight = (row + col + startColor) % 2 === 1;
+
         this.element.className = `chess-square ${isLight ? 'light' : 'dark'}`;
         this.element.dataset.square = this.square;
         this.element.dataset.row = row;
@@ -43,7 +47,6 @@ class SquareView {
         this.element.setAttribute('aria-label', `Casilla ${this.square}`);
         this.element.setAttribute('tabindex', '0');
 
-        // Añadir etiquetas de coordenadas
         if (this.options.showCoordinates) {
             this.addCoordinateLabels(row, col);
         }
@@ -86,23 +89,16 @@ class SquareView {
     }
 
     updatePiece(piece) {
-        // Remover pieza anterior
-        if (this.pieceElement) {
-            this.pieceElement.remove();
-            this.pieceElement = null;
+        if (this.pieceView) {
+            this.pieceView.destroy();
+            this.pieceView = null;
         }
 
-        // Añadir nueva pieza
         if (piece) {
-            this.pieceElement = document.createElement('div');
-            this.pieceElement.className = `piece ${piece.color}`;
-            this.pieceElement.textContent = piece.getSymbol();
-            this.pieceElement.dataset.piece = piece.type;
-            this.pieceElement.dataset.color = piece.color;
-            this.pieceElement.setAttribute('role', 'img');
-            this.pieceElement.setAttribute('aria-label', `${piece.color === 'white' ? 'Blanca' : 'Negra'} ${piece.getName()}`);
-            this.pieceElement.setAttribute('draggable', 'true');
-            this.element.appendChild(this.pieceElement);
+            const pieceElement = document.createElement('div');
+            this.pieceView = new PieceView(piece, pieceElement);
+            this.pieceView.render();
+            this.element.appendChild(pieceElement);
         }
     }
 
@@ -145,28 +141,59 @@ class SquareView {
         return [rank, file];
     }
 
-    // Añadir listener de eventos
-    addEventListener(event, callback) {
-        if (!this.element) return;
-        this.element.addEventListener(event, (e) => {
-            callback(this.square, {
-                isEmpty: !this.pieceElement,
-                piece: this.pieceElement ? {
-                    type: this.pieceElement.dataset.piece,
-                    color: this.pieceElement.dataset.color
-                } : null,
-                square: this.square,
-                event: e
+    on(event, callback) {
+        if (!this.eventListeners.has(event)) {
+            this.eventListeners.set(event, []);
+        }
+        this.eventListeners.get(event).push(callback);
+
+        if (this.element) {
+            this.element.addEventListener(event, (e) => {
+                this.emitEvent(event, e);
             });
+        }
+    }
+
+    off(event, callback) {
+        if (!this.eventListeners.has(event)) return;
+        const callbacks = this.eventListeners.get(event);
+        const index = callbacks.indexOf(callback);
+        if (index > -1) {
+            callbacks.splice(index, 1);
+        }
+    }
+
+    emitEvent(event, domEvent) {
+        if (!this.eventListeners.has(event)) return;
+        const callbacks = this.eventListeners.get(event);
+        callbacks.forEach(callback => {
+            try {
+                callback(this.square, {
+                    isEmpty: !this.pieceView,
+                    piece: this.pieceView ? this.pieceView.piece : null,
+                    square: this.square,
+                    domEvent: domEvent
+                });
+            } catch (e) {
+                console.error(`Error en callback de evento ${event}:`, e);
+            }
         });
     }
 
+    addEventListener(event, callback) {
+        this.on(event, callback);
+    }
+
     destroy() {
+        if (this.pieceView) {
+            this.pieceView.destroy();
+            this.pieceView = null;
+        }
+        this.eventListeners.clear();
         if (this.element && this.element.parentNode) {
             this.element.parentNode.removeChild(this.element);
         }
         this.element = null;
-        this.pieceElement = null;
     }
 }
 

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo de Integración - Sistema de Tablero de Ajedrez</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+        }
+        .header p {
+            margin: 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        .boards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .board-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        .board-section h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .chessboard {
+            margin: 20px 0;
+        }
+        .info-panel {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #667eea;
+        }
+        .info-panel h3 {
+            margin-top: 0;
+            color: #667eea;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .info-item {
+            margin: 8px 0;
+            padding: 5px;
+            background: white;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .info-item strong {
+            color: #667eea;
+            display: inline-block;
+            min-width: 120px;
+        }
+        .info-item .value {
+            word-break: break-all;
+            color: #333;
+        }
+        .demo-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+        .demo-section h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .controls button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .controls button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .controls button:active {
+            transform: translateY(0);
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.4;
+            margin-top: 15px;
+        }
+        .code-block code {
+            color: #a6e22e;
+        }
+        .code-comment {
+            color: #75715e;
+        }
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sistema de Tablero de Ajedrez MVC</h1>
+            <p>Ejemplo de integración con múltiples instancias y eventos</p>
+        </div>
+
+        <div class="boards-grid">
+            <!-- Tablero 1: Posición estándar, colores oscuros -->
+            <div class="board-section">
+                <h2>Tablero 1: Posición Estándar</h2>
+                <p style="color: #666; margin-top: 0;">Tablero 8x8 con color inicial oscuro</p>
+                <div id="board1" class="chessboard"></div>
+                <div class="info-panel">
+                    <h3>Información</h3>
+                    <div class="info-item">
+                        <strong>ID:</strong>
+                        <span class="value" id="board1-id">-</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Estado:</strong>
+                        <span class="value" id="board1-status">Inicializando...</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Última Acción:</strong>
+                        <span class="value" id="board1-action">-</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Ficha Seleccionada:</strong>
+                        <span class="value" id="board1-piece">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tablero 2: Tablero vacío, colores claros -->
+            <div class="board-section">
+                <h2>Tablero 2: Posición Vacía</h2>
+                <p style="color: #666; margin-top: 0;">Tablero 8x8 con color inicial claro</p>
+                <div id="board2" class="chessboard"></div>
+                <div class="info-panel">
+                    <h3>Información</h3>
+                    <div class="info-item">
+                        <strong>ID:</strong>
+                        <span class="value" id="board2-id">-</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Estado:</strong>
+                        <span class="value" id="board2-status">Inicializando...</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Última Acción:</strong>
+                        <span class="value" id="board2-action">-</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Tamaño:</strong>
+                        <span class="value" id="board2-size">8x8</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de demostración -->
+        <div class="demo-section">
+            <h2>Funcionalidades Demostradas</h2>
+            <p>
+                Este ejemplo muestra las características principales del sistema:
+            </p>
+            <ul style="color: #555; line-height: 1.8;">
+                <li><strong>Arquitectura MVC:</strong> El sistema está completamente separado en Modelo, Vista y Controlador</li>
+                <li><strong>Instancias Múltiples:</strong> Dos tableros independientes en la misma página con configuraciones diferentes</li>
+                <li><strong>IDs Únicos de Fichas:</strong> Cada ficha tiene un ID único que la identifica independientemente de su posición</li>
+                <li><strong>Sistema de Eventos:</strong> Listeners para casillas, fichas y movimientos</li>
+                <li><strong>Configuración Parametrizable:</strong> Tamaño, color inicial, posición, y más</li>
+                <li><strong>Callback de Actualización:</strong> Se ejecuta cuando el tablero necesita actualizarse</li>
+                <li><strong>HTML Renderizado:</strong> Método renderAsHTML() que devuelve el tablero como HTML puro</li>
+            </ul>
+
+            <div class="controls">
+                <button onclick="demoRenderHTML()">Ver HTML del Tablero 1</button>
+                <button onclick="demoShowSuggestions()">Mostrar Sugerencias</button>
+                <button onclick="demoGetState()">Ver Estado Actual</button>
+                <button onclick="demoAllInstances()">Listar Instancias</button>
+                <button onclick="demoClearBoard()">Limpiar Tablero 2</button>
+                <button onclick="demoShowPieceInfo()">Info de Pieza en E4</button>
+            </div>
+
+            <div class="code-block">
+                <span class="code-comment">// Ejemplo: Crear instancia y agregar eventos</span><br>
+                <code>const board = new ChessBoard('board1', {</code><br>
+                &nbsp;&nbsp;<code>initialPosition: 'start',</code><br>
+                &nbsp;&nbsp;<code>boardSize: 8,</code><br>
+                &nbsp;&nbsp;<code>squareColorStart: 'dark',</code><br>
+                &nbsp;&nbsp;<code>onUpdateRequired: (board) => {</code><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<code>console.log('Tablero actualizado:', board.boardId);</code><br>
+                &nbsp;&nbsp;<code>}</code><br>
+                <code>});</code><br>
+                <br>
+                <span class="code-comment">// Escuchar eventos</span><br>
+                <code>board.on('piece-clicked', (pieceData) => {</code><br>
+                &nbsp;&nbsp;<code>console.log('Pieza:', pieceData.pieceName);</code><br>
+                <code>});</code>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📚 Consulta la documentación completa en <strong>js/README.md</strong></p>
+            <p style="font-size: 0.9em; opacity: 0.8;">Sistema de Tablero de Ajedrez MVC - Ejemplo de Integración</p>
+        </div>
+    </div>
+
+    <!-- Scripts del Sistema -->
+    <script src="js/chess/models/Piece.js"></script>
+    <script src="js/chess/models/Move.js"></script>
+    <script src="js/chess/models/BoardModel.js"></script>
+    <script src="js/chess/views/PieceView.js"></script>
+    <script src="js/chess/views/SquareView.js"></script>
+    <script src="js/chess/views/BoardView.js"></script>
+    <script src="js/chess/services/ChessEngine.js"></script>
+    <script src="js/chess/services/MoveValidator.js"></script>
+    <script src="js/chess/services/NotationParser.js"></script>
+    <script src="js/chess/interfaces/IBoardConfig.js"></script>
+    <script src="js/chess/interfaces/IBoardProvider.js"></script>
+    <script src="js/chess/interfaces/IMoveHandler.js"></script>
+    <script src="js/chess/controllers/BoardController.js"></script>
+    <script src="js/chess/ChessBoard.js"></script>
+
+    <script>
+        let board1, board2;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Crear Tablero 1: Posición estándar con color oscuro
+            board1 = new ChessBoard('board1', {
+                initialPosition: 'start',
+                boardSize: 8,
+                squareColorStart: 'dark',
+                showCoordinates: true,
+                onUpdateRequired: (boardInstance) => {
+                    document.getElementById('board1-id').textContent = boardInstance.boardId;
+                    document.getElementById('board1-status').textContent = 'Listo';
+                }
+            });
+
+            // Crear Tablero 2: Tablero vacío con color claro
+            board2 = new ChessBoard('board2', {
+                initialPosition: '8/8/8/8/8/8/8/8 w - - 0 1',
+                boardSize: 8,
+                squareColorStart: 'light',
+                showCoordinates: true,
+                onUpdateRequired: (boardInstance) => {
+                    document.getElementById('board2-id').textContent = boardInstance.boardId;
+                    document.getElementById('board2-status').textContent = 'Listo';
+                }
+            });
+
+            // Eventos del Tablero 1
+            board1.on('square-clicked', (square, eventData) => {
+                const desc = eventData.isEmpty ? 'vacía' : 'con ficha';
+                document.getElementById('board1-action').textContent =
+                    `Casilla ${square} clickeada (${desc})`;
+            });
+
+            board1.on('piece-clicked', (pieceData) => {
+                document.getElementById('board1-piece').textContent =
+                    `${pieceData.pieceName} en ${pieceData.square}`;
+            });
+
+            board1.on('move-completed', (move) => {
+                document.getElementById('board1-action').textContent =
+                    `Movimiento: ${move.from} → ${move.to}`;
+            });
+
+            // Eventos del Tablero 2
+            board2.on('square-clicked', (square, eventData) => {
+                const desc = eventData.isEmpty ? 'vacía' : 'con ficha';
+                document.getElementById('board2-action').textContent =
+                    `Casilla ${square} clickeada (${desc})`;
+            });
+        });
+
+        function demoRenderHTML() {
+            const html = board1.renderAsHTML();
+            alert('HTML del Tablero 1:\n\n' + html.substring(0, 200) + '...\n\nVer consola para el HTML completo');
+            console.log('HTML Completo del Tablero 1:', html);
+        }
+
+        function demoShowSuggestions() {
+            board1.showSuggestions({
+                from: 'e2',
+                to: 'e4'
+            });
+            alert('Mostrando sugerencia de movimiento: e2 → e4');
+            setTimeout(() => board1.clearSuggestions(), 3000);
+        }
+
+        function demoGetState() {
+            const state = board1.getState();
+            alert('Estado del Tablero 1:\n\nJugador actual: ' + state.currentPlayer +
+                  '\nMovimientos registrados: ' + state.moveHistory.length +
+                  '\nVer consola para detalles completos');
+            console.log('Estado del Tablero 1:', state);
+        }
+
+        function demoAllInstances() {
+            const instances = ChessBoard.getAllInstances();
+            alert('Instancias activas: ' + instances.length + '\n\nIDs:\n' +
+                  instances.map(b => '• ' + b.boardId).join('\n'));
+            console.log('Todas las instancias:', instances);
+        }
+
+        function demoClearBoard() {
+            if (board2) {
+                board2.model.clear();
+                board2.render();
+                alert('Tablero 2 limpiado');
+            }
+        }
+
+        function demoShowPieceInfo() {
+            const piece = board1.getPiece('e2');
+            if (piece) {
+                alert('Pieza en e2:\n\n' +
+                      'Tipo: ' + piece.type + '\n' +
+                      'Color: ' + piece.color + '\n' +
+                      'Nombre: ' + piece.getName() + '\n' +
+                      'ID: ' + piece.id.substring(0, 30) + '...' + '\n' +
+                      'Símbolo: ' + piece.getSymbol());
+            } else {
+                alert('No hay pieza en e2');
+            }
+        }
+    </script>
+</body>
+</html>

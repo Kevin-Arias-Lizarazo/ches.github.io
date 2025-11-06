@@ -7,40 +7,38 @@ class BoardModel {
         this.moveHistory = [];
     }
 
-    // Obtener pieza en una casilla (notación algebraica: 'e4')
     getPiece(square) {
         const coords = this.squareToCoords(square);
         if (!coords) return null;
         const [row, col] = coords;
         const piece = this.board[row][col];
         if (!piece) return null;
-        return new Piece(piece.type, piece.color, square);
+        return new Piece(piece.type, piece.color, square, piece.id);
     }
 
-    // Obtener pieza por coordenadas [row, col]
     getPieceAtCoords(row, col) {
         if (row < 0 || row > 7 || col < 0 || col > 7) return null;
         const piece = this.board[row][col];
         if (!piece) return null;
         const square = this.coordsToSquare(row, col);
-        return new Piece(piece.type, piece.color, square);
+        return new Piece(piece.type, piece.color, square, piece.id);
     }
 
-    // Establecer pieza en una casilla
     setPiece(square, piece) {
         const coords = this.squareToCoords(square);
         if (!coords) return false;
         const [row, col] = coords;
-        
+
         if (piece) {
             this.board[row][col] = {
                 type: piece.type,
-                color: piece.color
+                color: piece.color,
+                id: piece.id
             };
         } else {
             this.board[row][col] = null;
         }
-        
+
         this.notifyObservers();
         return true;
     }

@@ -37,23 +37,24 @@ class BoardController {
     setupViewListeners() {
         if (!this.view) return;
 
-        // Click en casilla
         this.view.on('square-clicked', (square, eventData) => {
             this.handleSquareClick(square, eventData);
         });
 
-        // Click en casilla vacía
         this.view.on('empty-square-clicked', (square, eventData) => {
             this.handleEmptySquareClick(square, eventData);
         });
 
-        // Drag de pieza
-        this.view.on('piece-drag-start', (square, eventData) => {
-            this.handlePieceDragStart(square, eventData);
+        this.view.on('piece-clicked', (pieceData) => {
+            this.emit('piece-clicked', pieceData);
         });
 
-        this.view.on('piece-drag-end', (square, eventData) => {
-            this.handlePieceDragEnd(square, eventData);
+        this.view.on('piece-drag-start', (pieceData) => {
+            this.handlePieceDragStart(pieceData.square, pieceData);
+        });
+
+        this.view.on('piece-drag-end', (pieceData) => {
+            this.handlePieceDragEnd(pieceData.square, pieceData);
         });
     }
 
